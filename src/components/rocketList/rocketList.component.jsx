@@ -3,16 +3,30 @@ import { useState, useEffect } from "react";
 import "./rocketList.styles.css";
 
 const RocketList = () => {
-  const url = "https://api.spacexdata.com/v4/rockets";
+  //   const url = "https://api.spacexdata.com/v4/rockets";
   const [rocketServiceData, setRocketServiceData] = useState([]);
+  const [launchData, setLaunchData] = useState([]);
+
+  const getNasaData = () => {
+    let endpoint = [
+      "https://api.spacexdata.com/v4/rockets",
+      "https://api.spacexdata.com/v5/launches",
+    ];
+
+    Promise.all(endpoint.map((endpoint) => axios.get(endpoint))).then(
+      ([{ data: rockets }, { data: launches }]) => {
+        setRocketServiceData(rockets);
+        setLaunchData(launches);
+      }
+    );
+  };
 
   useEffect(() => {
-    axios.get(url).then((res) => {
-      setRocketServiceData(res.data);
-    });
+    getNasaData();
   }, []);
 
   console.log(rocketServiceData);
+  console.log(launchData);
 
   return (
     <div className="rocket-container">
